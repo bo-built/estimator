@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 from django.contrib.auth.models import User
 
 
@@ -16,6 +17,34 @@ class Project(models.Model):
             self.name,
             self.user.username
         )
+
+    @property
+    def material_cost_total(self):
+        sum = self.material_set.aggregate(total=Sum("total_cost"))
+        return sum['total']
+
+    @property
+    def material_charge_total(self):
+        sum = self.material_set.aggregate(total=Sum("total_charge"))
+        return sum['total']
+
+    @property
+    def profit_on_materials(self):
+        return self.material_charge_total - self.material_cost_total
+
+    @property
+    def labor_cost_total(self):
+        sum = self.labor_set.aggregate(total=Sum("total_cost"))
+        return sum['total']
+
+    @property
+    def labor_charge_total(self):
+        sum = self.labor_set.aggregate(total=Sum("total_charge"))
+        return sum['total']
+
+    @property
+    def profit_on_labor(self):
+        return self.labor_charge_total - self.labor_cost_total
 
 
 class LaborType(models.Model):
@@ -39,12 +68,35 @@ class Labor(models.Model):
     labor_type = models.ForeignKey(LaborType, on_delete=models.CASCADE)
     hours = models.DecimalField(max_digits=10, decimal_places=2)
     pay_rate = models.DecimalField(
+        help_text="This is initially copied from the source Labor type, but you can override it for this specific project.",  # noqa
         max_digits=10,
         decimal_places=2,
         blank=True,
         null=True
     )
     charge = models.DecimalField(
+        help_text="This is initially copied from the source Labor type, but you can override it for this specific project.",  # noqa
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    total_cost = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    total_charge = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    profit = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         blank=True,
@@ -54,7 +106,7 @@ class Labor(models.Model):
     def __str__(self):
         return '<pk: {}> {} // {}'.format(
             self.pk,
-            self.name,
+            self.labor_type.name,
             self.project
         )
 
@@ -65,22 +117,23 @@ class Labor(models.Model):
         if not self.charge:
             self.charge = self.labor_type.charge
 
+        self.total_cost = self.set_total_cost()
+        self.total_charge = self.set_total_charge()
+        self.profit = self.set_profit()
+
         super().save(*args, **kwargs)
 
-    @property
-    def total_cost(self):
+    def set_total_cost(self):
         if self.hours and self.pay_rate:
             return self.hours * self.pay_rate
         return 0
 
-    @property
-    def total_charge(self):
+    def set_total_charge(self):
         if self.hours and self.charge:
             return self.hours * self.charge
         return 0
 
-    @property
-    def profit(self):
+    def set_profit(self):
         return self.total_charge - self.total_cost
 
 
@@ -105,12 +158,35 @@ class Material(models.Model):
     material_type = models.ForeignKey(MaterialType, on_delete=models.CASCADE)
     quantity = models.DecimalField(max_digits=10, decimal_places=2)
     unit_cost = models.DecimalField(
+        help_text="This is initially copied from the source Material type, but you can override it for this specific project.",  # noqa
         max_digits=10,
         decimal_places=2,
         blank=True,
         null=True
     )
     charge_multiplier = models.DecimalField(
+        help_text="This is initially copied from the source Material type, but you can override it for this specific project.",  # noqa
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    total_cost = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    total_charge = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    profit = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         blank=True,
@@ -131,20 +207,23 @@ class Material(models.Model):
         if not self.charge_multiplier:
             self.charge_multiplier = self.material_type.charge_multiplier
 
+        self.total_cost = self.set_total_cost()
+        self.total_charge = self.set_total_charge()
+        self.profit = self.set_profit()
+
         super().save(*args, **kwargs)
 
-    @property
-    def total_cost(self):
+    def set_total_cost(self):
         if self.quantity and self.unit_cost:
             return self.quantity * self.unit_cost
         return 0
 
-    @property
-    def total_charge(self):
-        if self.total_cost and self.charge_multiplier:
-            return self.total_cost * self.charge_multiplier
+    def set_total_charge(self):
+        if self.quantity and self.total_cost and self.charge_multiplier:
+            return self.quantity * self.unit_cost * self.charge_multiplier
         return 0
 
-    @property
-    def profit(self):
-        return self.total_charge - self.total_cost
+    def set_profit(self):
+        if self.total_charge and self.total_cost:
+            return self.total_charge - self.total_cost
+        return 0
