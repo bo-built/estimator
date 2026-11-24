@@ -1,10 +1,14 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class EstimableItemModel(models.Model):
     class Meta:
         abstract = True
+        unique_together = ('sku', 'user')
 
+    sku = models.CharField(max_length=100, db_index=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     cost_rate = models.DecimalField(max_digits=10, decimal_places=2)
@@ -27,6 +31,8 @@ class LaborType(EstimableItemModel):
 
 
 class MaterialType(EstimableItemModel):
+
+    # TO DO sku and user need to be unique but Meta is already declared
 
     def __str__(self):
         return 'Material Type <pk: {}>: {}'.format(

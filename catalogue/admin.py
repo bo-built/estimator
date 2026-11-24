@@ -13,9 +13,10 @@ class ProjectChargableAdmin(admin.ModelAdmin):
             return f"${obj.charge_per_unit:,.2f}"
         return "-"
 
+
 @admin.register(models.MaterialType)
 class MaterialTypeAdmin(ProjectChargableAdmin):
-    pass
+    list_display = ['sku', 'name', 'cost_rate', 'charge_multiplier', 'charge_rate']
 
 
 @admin.register(models.LaborType)
