@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 
-from catalogue.services import preload_starter_catalogue
+from catalogue.services import preload_materials_catalogue, preload_labor_catalogue
 
 
 class Command(BaseCommand):
@@ -14,4 +14,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         user_id = options['user']
         user = User.objects.get(pk=user_id)
-        preload_starter_catalogue(user=user, flush=True)
+        preload_materials_catalogue(user=user, flush=True)
+        preload_labor_catalogue(user=user, flush=True)

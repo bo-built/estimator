@@ -1,0 +1,9 @@
+sku,name,description,cost_rate,charge_multiplier,charge / hr
+millwork-1,Millwork - Standard,,25,3.75,93.75
+millwork-2,Millwork - Advanced,,25,4.5,112.5
+finishing-1,Finishing,,25,4.5,112.5
+assembly-1,Assembly - Standard,,25,3.75,93.75
+assembly-2,Assembly - Advanced,,25,4.5,112.5
+cadcam-1,CAD Design,,25,5,125
+cnc-1,CNC Cutting,,25,4,100
+handling-1,Parts Handling,,25,3.75,93.75
