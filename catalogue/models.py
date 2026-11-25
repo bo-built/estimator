@@ -7,6 +7,14 @@ class EstimableItemModel(models.Model):
         abstract = True
         unique_together = ('sku', 'user')
 
+    field_help_texts = {}
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        for field_name, help_text in cls.field_help_texts.items():
+            field = cls._meta.get_field(field_name)
+            field.help_text = help_text
+
     sku = models.CharField(max_length=100, db_index=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
@@ -29,6 +37,17 @@ class LaborType(EstimableItemModel):
             self.name,
         )
 
+    field_help_texts = {
+        'sku': 'Give this labor type a unique identifier in your catalogue.',
+        'cost_rate': (
+            'How much do YOU pay per hour of this labor type? Do you pay yourself $25/hr? '
+            'Do you pay an employee $30/hr? Do you pay a contractor $100/hr?.',
+        ),
+        'charge_multiplier': (
+            'How do you charge for this labor type? At cost (1.0)? 2 times your cost?'
+        ),
+    }
+
 
 class MaterialType(EstimableItemModel):
 
@@ -39,3 +58,13 @@ class MaterialType(EstimableItemModel):
             self.pk,
             self.name,
         )
+
+    field_help_texts = {
+        'sku': 'Give this material a unique identifier in your catalogue.',
+        'cost_rate': (
+            'How much do YOU pay per unit of this material?',
+        ),
+        'charge_multiplier': (
+            'How do you charge per unit of this material?'
+        ),
+    }
