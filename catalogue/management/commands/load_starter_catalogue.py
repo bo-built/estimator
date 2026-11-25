@@ -3,7 +3,7 @@ from django.utils.termcolors import make_style
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 
-from catalogue.services import preload_materials_catalogue, preload_labor_catalogue
+from catalogue.services import preload_materials_catalogue, preload_work_catalogue
 
 INFO_STYLE = blue_style = make_style(fg="blue", opts=("bold",))
 
@@ -56,5 +56,5 @@ class Command(BaseCommand):
 
         self.stdout.write(INFO_STYLE("Creating catalogue."))
         preload_materials_catalogue(user=user, flush=True)
-        preload_labor_catalogue(user=user, flush=True)
+        preload_work_catalogue(user=user, flush=True)
         self.stdout.write(self.style.SUCCESS("Done."))

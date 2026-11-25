@@ -11,10 +11,10 @@ class AuthenticatedApiView(APIView):
         return [IsAuthenticated()]
 
 
-class LaborItemsSerializer(AuthenticatedApiView):
+class WorkItemsSerializer(AuthenticatedApiView):
     def get(self, request):
-        items = request.user.labortype_set.all()
-        serializer = serializers.LaborTypeSerializer(items, many=True)
+        items = request.user.worktype_set.all()
+        serializer = serializers.WorkTypeSerializer(items, many=True)
 
         return Response(serializer.data)
 

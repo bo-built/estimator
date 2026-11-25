@@ -29,22 +29,22 @@ class EstimableItemModel(models.Model):
         return 0
 
 
-class LaborType(EstimableItemModel):
+class WorkType(EstimableItemModel):
 
     def __str__(self):
-        return 'Labor Type <pk: {}>: {}'.format(
+        return 'Work Type <pk: {}>: {}'.format(
             self.pk,
             self.name,
         )
 
     field_help_texts = {
-        'sku': 'Give this labor type a unique identifier in your catalogue.',
+        'sku': 'Give this work type a unique identifier in your catalogue.',
         'cost_rate': (
-            'How much do YOU pay per hour of this labor type? Do you pay yourself $25/hr? '
+            'How much do YOU pay per hour of this work type? Do you pay yourself $25/hr? '
             'Do you pay an employee $30/hr? Do you pay a contractor $100/hr?.',
         ),
         'charge_multiplier': (
-            'How do you charge for this labor type? At cost (1.0)? 2 times your cost?'
+            'How do you charge for this work type? At cost (1.0)? 2 times your cost?'
         ),
     }
 

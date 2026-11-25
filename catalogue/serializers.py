@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from catalogue.models import (
-    LaborType,
+    WorkType,
     MaterialType,
 )
 
@@ -14,13 +14,14 @@ class BaseItemTypeSerializer(serializers.HyperlinkedModelSerializer):
             'description',
             'cost_rate',
             'charge_multiplier',
+            'charge_rate',
             # 'api_url',
         ]
 
 
-class LaborTypeSerializer(BaseItemTypeSerializer):
+class WorkTypeSerializer(BaseItemTypeSerializer):
     class Meta(BaseItemTypeSerializer.Meta):
-        model = LaborType
+        model = WorkType
 
 
 class MaterialTypeSerializer(BaseItemTypeSerializer):

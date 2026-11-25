@@ -1,6 +1,6 @@
 import csv
 
-from catalogue.models import MaterialType, LaborType
+from catalogue.models import MaterialType, WorkType
 
 
 def preload_materials_catalogue(*, user, flush=False, replace=True):
@@ -31,26 +31,26 @@ def preload_materials_catalogue(*, user, flush=False, replace=True):
                 material_type.save()
 
 
-def preload_labor_catalogue(*, user, flush=False, replace=True):
+def preload_work_catalogue(*, user, flush=False, replace=True):
     if flush:
-        LaborType.objects.filter(user=user).all().delete()
+        WorkType.objects.filter(user=user).all().delete()
 
-    with open("data/labor-catalogue-starter.csv", mode="r", newline="", encoding="utf-8") as file:
+    with open("data/work-catalogue-starter.csv", mode="r", newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
         lines = list(reader)
         for line in lines:
-            labor_type = None
+            work_type = None
             sku = line['sku']
-            exists = LaborType.objects.filter(sku=sku, user=user).first()
+            exists = WorkType.objects.filter(sku=sku, user=user).first()
             if exists and replace:
-                labor_type = exists
+                work_type = exists
             elif not exists:
-                labor_type = LaborType(user=user, sku=sku)
+                work_type = WorkType(user=user, sku=sku)
 
-            if labor_type:
-                labor_type.name = line['name']
-                labor_type.description = line['description']
-                labor_type.cost_rate = line['cost_rate']
-                labor_type.charge_multiplier = line['charge_multiplier'] or 2
+            if work_type:
+                work_type.name = line['name']
+                work_type.description = line['description']
+                work_type.cost_rate = line['cost_rate']
+                work_type.charge_multiplier = line['charge_multiplier'] or 2
 
-                labor_type.save()
+                work_type.save()

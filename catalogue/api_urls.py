@@ -6,9 +6,9 @@ app_name = 'catalogue_api'
 
 urlpatterns = [
     path(
-        'catalogue/api/laboritems/',
-        api_views.LaborItemsSerializer.as_view(),
-        name='laboritems_api',
+        'catalogue/api/workitems/',
+        api_views.WorkItemsSerializer.as_view(),
+        name='workitems_api',
     ),
     path(
         'catalogue/api/materialitems/',

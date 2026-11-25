@@ -19,6 +19,6 @@ class MaterialTypeAdmin(ProjectChargableAdmin):
     pass
 
 
-@admin.register(models.LaborType)
-class LaborTypeAdmin(ProjectChargableAdmin):
+@admin.register(models.WorkType)
+class WorkTypeAdmin(ProjectChargableAdmin):
     pass

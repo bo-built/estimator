@@ -19,8 +19,8 @@ class MaterialAggregateAdmin(BaseAggregateAdmin):
     pass
 
 
-@admin.register(models.LaborAggregate)
-class LaborAggregateAdmin(BaseAggregateAdmin):
+@admin.register(models.WorkAggregate)
+class WorkAggregateAdmin(BaseAggregateAdmin):
     pass
 
 
@@ -56,9 +56,9 @@ class MaterialItemEstimateAdmin(BaseEstimateAdmin):
     item_type_field = 'material_type'
 
 
-@admin.register(models.LaborItemEstimate)
-class LaborItemEstimateAdmin(BaseEstimateAdmin):
-    item_type_field = 'labor_type'
+@admin.register(models.WorkItemEstimate)
+class WorkItemEstimateAdmin(BaseEstimateAdmin):
+    item_type_field = 'work_type'
 
 
 @admin.register(models.Project)

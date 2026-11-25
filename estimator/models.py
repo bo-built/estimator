@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from estimator.model_classes import AggregateCalculationModel, EstimatableCalculationModel
-from catalogue.models import (MaterialType, LaborType)
+from catalogue.models import (MaterialType, WorkType)
 
 
 class Project(models.Model):
@@ -42,7 +42,7 @@ class Project(models.Model):
         created = self.pk is None
         if created:
             super().save(*args, **kwargs)
-            LaborAggregate.objects.create(project=self)
+            WorkAggregate.objects.create(project=self)
             MaterialAggregate.objects.create(project=self)
             self.set_calculated_totals()
             self.save()
@@ -60,25 +60,25 @@ class Project(models.Model):
     def set_estimated_charge(self):
         self.estimated_charge = (
             (self.materialaggregate.estimated_charge or Decimal('0')) +
-            (self.laboraggregate.estimated_charge or Decimal('0'))
+            (self.workaggregate.estimated_charge or Decimal('0'))
         )
 
     def set_estimated_cost(self):
         self.estimated_cost = (
             (self.materialaggregate.estimated_cost or Decimal('0')) +
-            (self.laboraggregate.estimated_cost or Decimal('0'))
+            (self.workaggregate.estimated_cost or Decimal('0'))
         )
 
     def set_realized_cost(self):
         self.realized_cost = (
             (self.materialaggregate.realized_cost or Decimal('0')) +
-            (self.laboraggregate.realized_cost or Decimal('0'))
+            (self.workaggregate.realized_cost or Decimal('0'))
         )
 
     def set_estimated_profit(self):
         self.estimated_profit = (
             (self.materialaggregate.estimated_profit or Decimal('0')) +
-            (self.laboraggregate.estimated_profit or Decimal('0'))
+            (self.workaggregate.estimated_profit or Decimal('0'))
         )
 
     def set_realized_profit(self):
@@ -90,16 +90,16 @@ class Project(models.Model):
         self.realized_profit = (calcation_value or Decimal('0')) - self.realized_cost
 
 
-class LaborAggregate(AggregateCalculationModel):
+class WorkAggregate(AggregateCalculationModel):
 
     def __str__(self):
-        return "Labor Aggregate Calculation <pk: {}> Project: {}".format(
+        return "Work Aggregate Calculation <pk: {}> Project: {}".format(
             self.pk, self.project
         )
 
     @property
     def queryset(self):
-        return self.project.laboritemestimate_set
+        return self.project.workitemestimate_set
 
 
 class MaterialAggregate(AggregateCalculationModel):
@@ -114,16 +114,16 @@ class MaterialAggregate(AggregateCalculationModel):
         return self.project.materialitemestimate_set
 
 
-class LaborItemEstimate(EstimatableCalculationModel):
+class WorkItemEstimate(EstimatableCalculationModel):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    labor_type = models.ForeignKey(LaborType, on_delete=models.CASCADE)
+    work_type = models.ForeignKey(WorkType, on_delete=models.CASCADE)
 
-    PARENT_OBJECT_KEY = 'labor_type'
+    PARENT_OBJECT_KEY = 'work_type'
 
     def __str__(self):
         return '<pk: {}> {} // {}'.format(
             self.pk,
-            self.labor_type.name,
+            self.work_type.name,
             self.project
         )
 

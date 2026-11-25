@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title_tag %}{{machine.name}}{% endblock %}{% block extra_header %}
+	<script src="{% static 'js/utils.js' %}"></script>
+	<script src="{% static 'js/catalogue/dashboard.js' %}"></script>
+{% endblock %}
+{% block page_content %}
+
+<div class="row">
+    <div class="col-12"><h2>Your Catalogue</h2></div>
+</div>
+
+<div x-data="dashboardApp" x-init="initDashoard('{{fetch_url}}')">
+
+<div class="row">
+    <div class="col-12">
+        <h3>{{header}} Catalogue</h3>
+    </div>
+    <div class="col-12" id="materials_loader" x-show="!catalogueLoaded">
+        <div class="spinner-border text-info" role="status">
+            <span class="visually-hidden"></span>
+        </div>
+    </div>
+    <div class="col-12" id="materials container" x-show="catalogueLoaded">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Internal SKU</th>
+                    <th>Description</th>
+                    <th>Cost / Unit</th>
+                    <th>Upcharge / Unit</th>
+                    <th colspan="2">Charge / Unit</th>
+                </tr>
+            </thead>
+        <template x-for="item in catalogue" :key="item.pk">
+            <tbody>
+                {% include 'catalogue/includes/catalogue-item-row.html' %}
+            </tbody>
+        </template>
+        </table>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
