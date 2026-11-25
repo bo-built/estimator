@@ -7,4 +7,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('', include('appuser.urls')),
+    path('', include('catalogue.urls')),
+    path('', include('catalogue.api_urls')),
 ]

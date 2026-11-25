@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title_tag %}{{machine.name}}{% endblock %}{% block extra_header %}
+	<script src="{% static 'js/utils.js' %}"></script>
+	<script src="{% static 'js/catalogue/dashboard.js' %}"></script>
+{% endblock %}
+{% block page_content %}
+
+<div class="row">
+    <div class="col-12"><h2>{{machine.name}}</h2></div>
+</div>
+
+<div x-data="dashboardApp" x-init="initDashoard('{% url "catalogue_api:materialitems_api" %}', '{% url "catalogue_api:laboritems_api" %}')">
+<div class="row" id="log_loading">
+    <div class="col-12">
+        <div class="spinner-border text-info" role="status">
+            <span class="visually-hidden"></span>
+        </div>
+    </div>
+</div>
+
+
+<div class="row hidden" id="log_loaded">
+    <div class="col-md-8 order-1 order-md-2" id="log">
+        <h3>Materials</h3>
+    </div>
+</div>
+</div>
+
+{% endblock %}
