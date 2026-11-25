@@ -1,8 +1,27 @@
 from django.contrib import admin
 from estimator import models
 
-admin.site.register(models.LaborCalculation)
-admin.site.register(models.MaterialCalculation)
+
+class BaseAggregateAdmin(admin.ModelAdmin):
+    fields = [
+        'estimated_charge',
+        'estimated_cost',
+        'estimated_profit',
+        'realized_cost',
+        'realized_profit',
+    ]
+
+    readonly_fields = fields
+
+
+@admin.register(models.MaterialAggregate)
+class MaterialAggregateAdmin(BaseAggregateAdmin):
+    pass
+
+
+@admin.register(models.LaborAggregate)
+class LaborAggregateAdmin(BaseAggregateAdmin):
+    pass
 
 
 class BaseEstimateAdmin(admin.ModelAdmin):
@@ -32,13 +51,13 @@ class BaseEstimateAdmin(admin.ModelAdmin):
         ]
 
 
-@admin.register(models.MaterialEstimate)
-class MaterialEstimateAdmin(BaseEstimateAdmin):
+@admin.register(models.MaterialItemEstimate)
+class MaterialItemEstimateAdmin(BaseEstimateAdmin):
     item_type_field = 'material_type'
 
 
-@admin.register(models.LaborEstimate)
-class LaborEstimateAdmin(BaseEstimateAdmin):
+@admin.register(models.LaborItemEstimate)
+class LaborItemEstimateAdmin(BaseEstimateAdmin):
     item_type_field = 'labor_type'
 
 
