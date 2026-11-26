@@ -15,7 +15,7 @@ class BaseItemTypeSerializer(serializers.HyperlinkedModelSerializer):
             'cost_rate',
             'charge_multiplier',
             'charge_rate',
-            # 'api_url',
+            'api_url',
         ]
 
 

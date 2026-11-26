@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 class EstimableItemModel(models.Model):
@@ -48,6 +49,13 @@ class WorkType(EstimableItemModel):
         ),
     }
 
+    @property
+    def api_url(self):
+        return reverse(
+            'catalogue_api:work_catalogue_item',
+            kwargs={'item_pk': self.pk}
+        )
+
 
 class MaterialType(EstimableItemModel):
 
@@ -68,3 +76,10 @@ class MaterialType(EstimableItemModel):
             'How do you charge per unit of this material?'
         ),
     }
+
+    @property
+    def api_url(self):
+        return reverse(
+            'catalogue_api:material_catalogue_item',
+            kwargs={'item_pk': self.pk}
+        )

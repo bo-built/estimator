@@ -6,15 +6,11 @@
 {% endblock %}
 {% block page_content %}
 
-<div class="row">
-    <div class="col-12"><h2>Your Catalogue</h2></div>
-</div>
-
 <div x-data="dashboardApp" x-init="initDashoard('{{fetch_url}}')">
 
 <div class="row">
     <div class="col-12">
-        <h3>{{header}} Catalogue</h3>
+        <h2>{{header}} Catalogue</h2>
     </div>
     <div class="col-12" id="materials_loader" x-show="!catalogueLoaded">
         <div class="spinner-border text-info" role="status">
@@ -28,9 +24,9 @@
                     <th>Item Name</th>
                     <th>Internal SKU</th>
                     <th>Description</th>
-                    <th>Cost / Unit</th>
-                    <th>Upcharge / Unit</th>
-                    <th colspan="2">Charge / Unit</th>
+                    <th>Cost / {{unit_name}}</th>
+                    <th>Markup Factor</th>
+                    <th colspan="2">Charge / {{unit_name}}</th>
                 </tr>
             </thead>
         <template x-for="item in catalogue" :key="item.pk">

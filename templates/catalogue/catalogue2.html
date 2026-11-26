@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title_tag %}{{machine.name}}{% endblock %}{% block extra_header %}
+	<script src="{% static 'js/utils.js' %}"></script>
+	<script src="{% static 'js/catalogue/dashboard.js' %}"></script>
+{% endblock %}
+{% block page_content %}
+
+<div x-data="dashboardApp" x-init="initDashoard('{{fetch_url}}')">
+
+<div class="row">
+    <div class="col-12">
+        <h2>{{header}} Catalogue</h2>
+    </div>
+    <div class="col-12" id="materials_loader" x-show="!catalogueLoaded">
+        <div class="spinner-border text-info" role="status">
+            <span class="visually-hidden"></span>
+        </div>
+    </div>
+    <div class="col-12" id="materials container" x-show="catalogueLoaded">
+        <div class="row">
+            <div class="col-md-3">Name</div>
+            <div class="col-md-2">SKU</div>
+            <div class="col-md-2">Cost / {{unit_name}}</div>
+            <div class="col-md-2">Markup Factor</div>
+            <div class="col-md-2">Charge / {{unit_name}}</div>
+            <div class="col-md-1"></div>
+            <hr />
+        </div>
+        <template x-for="item in catalogue" :key="item.pk">
+            <div class="catalogue_row font-light">
+            {% include 'catalogue/includes/catalogue-item-card.html' %}
+            </div>
+        </template>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}

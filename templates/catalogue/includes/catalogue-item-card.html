@@ -1,0 +1,46 @@
+<div class="row catalogue_row__item"  x-show="editItem != item">
+    <div class="col-md-3" x-text="item.name"></div>
+    <div class="col-md-2" x-text="item.sku"></div>
+    <div class="col-md-2"
+        x-text="new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(item.cost_rate)"></div>
+    <div class="col-md-2" x-text="item.charge_multiplier"></div>
+    <div class="col-md-2"
+        x-text="new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(item.charge_rate)"></div>
+    <div class="col-md-1">
+        <button class="btn btn-primary btn-sm" @click="setEditItem(item)">edit</button>
+    </div>
+</div>
+<div class="row catalogue_row__item"  x-show="editItem == item">
+    <div class="col-md-3">
+        <input type="text" class="form-control"
+        :class="{ 'is-invalid': !editDraft.name?.trim() || nameIsDuplicate() }" x-model="editDraft.name" required/>
+        <div class="text-danger" x-show="nameIsDuplicate()"><em>Duplicate Name</em></div>
+    </div>
+    <div class="col-md-2">
+        <input type="text" class="form-control"
+        :class="{ 'is-invalid': !editDraft.sku?.trim() || skuIsDuplicate() }" x-model="editDraft.sku" required/>
+        <div class="text-danger" x-show="skuIsDuplicate()"><em>Duplicate SKU</em></div>
+    </div>
+    <div class="col-md-2">
+        <input type="number" class="form-control"
+        x-model.number="editDraft.cost_rate" step="0.01"
+        :class="{ 'is-invalid': !Number(editDraft.cost_rate) }"
+        @change="updateEditDraftChargeRate()"
+        required  />
+    </div>
+    <div class="col-md-2">
+        <input type="number" class="form-control"
+        x-model.number="editDraft.charge_multiplier" step="0.01"
+        :class="{ 'is-invalid': !Number(editDraft.charge_multiplier) }"
+        step="0.01"
+        @change="updateEditDraftChargeRate()"
+        required />
+    </div>
+    <div class="col-md-2"
+        x-text="new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(editDraft.charge_rate)"></div>
+    <div class="col-md-1">
+        <button class="btn btn-primary btn-sm" @click="cancelEditItem(item)" type="button">cancel</button>
+        <button class="btn btn-success btn-sm" type="submit" @click="saveEditItem(item)">save</button>
+    </div>
+</div>
+<hr />

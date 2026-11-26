@@ -19,8 +19,7 @@
     <td><input type="text" class="form-control" x-model="editDraft.description" /></td>
     <td><input type="number" class="form-control"
         :class="{ 'is-invalid': !editDraft.cost_rate?.trim() }" x-model.number="editDraft.cost_rate" step="0.01" required @change="updateEditDraftChargeRate()" /></td>
-    <td><input type="number" class="form-control"
-        :class="{ 'is-invalid': !editDraft.charge_multiplier?.trim() }" x-model="editDraft.charge_multiplier" step="0.01" required @change="updateEditDraftChargeRate()" /></td>
+    <td></td>
     <td x-text="new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(editDraft.charge_rate)"></td>
     <td>
         <button class="btn btn-success btn-sm" type="submit" @click="saveEditItem(item)">save</button>

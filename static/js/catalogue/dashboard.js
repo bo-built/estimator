@@ -18,10 +18,36 @@ document.addEventListener('alpine:init', () => {
             this.editItem = null;
         },
 
-        saveEditItem(item) {
+        async saveEditItem(item) {
             this.hasErrors = false;
-            Object.assign(this.editItem, this.editDraft);
-            this.editItem = null;
+            this.hasErrors = this.checkForErrors();
+            if(!this.hasErrors) {
+                try {
+                    var payload = this.editDraft;
+                    const response = await fetch(this.editDraft.api_url, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken'),
+                        },
+                        body: JSON.stringify(payload),
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        console.error('Validation errors:', data);
+                        return;
+                    } else {
+                        Object.assign(this.editItem, this.editDraft);
+                        this.editItem = null;
+                    }
+                }  catch (error) {
+                    console.error('Failed to update item:', error);
+                }
+            } else {
+                return;
+            }
         },
 
         updateEditDraftChargeRate() {
@@ -48,11 +74,24 @@ document.addEventListener('alpine:init', () => {
             );
         },
 
+        validNumber(val) {
+            return val !== null &&
+            String(val).trim() !== "" &&
+            Number.isFinite(Number(val)) &&
+            Number(val) > 0
+        },
+
         checkForErrors() {
             if(!this.editDraft.name?.trim()) {
                 return true;
             }
+            if(!this.editDraft.sku?.trim()) {
+                return true;
+            }
             if(this.nameIsDuplicate() || this.skuIsDuplicate()) {
+                return true;
+            }
+            if(!this.validNumber(this.editDraft.cost_rate) || !this.validNumber(this.editDraft.charge_multiplier)) {
                 return true;
             }
             return false;
