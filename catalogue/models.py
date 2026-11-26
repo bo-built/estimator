@@ -4,9 +4,15 @@ from django.urls import reverse
 
 
 class EstimableItemModel(models.Model):
+    """ Model class for items that are added to estimates, e.g. Material or work Type.
+
+        Both types are essentially the exact same, except for label names that
+        can be specified on the front end.
+    """
     class Meta:
         abstract = True
-        unique_together = ('sku', 'user')
+        unique_together = ('sku', 'user', )
+        ordering = ('name', )
 
     field_help_texts = {}
 

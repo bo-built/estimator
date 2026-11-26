@@ -115,28 +115,18 @@ class MaterialAggregate(AggregateCalculationModel):
 
 
 class WorkItemEstimate(EstimatableCalculationModel):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    work_type = models.ForeignKey(WorkType, on_delete=models.CASCADE)
-
-    PARENT_OBJECT_KEY = 'work_type'
-
-    def __str__(self):
-        return '<pk: {}> {} // {}'.format(
-            self.pk,
-            self.work_type.name,
-            self.project
-        )
+    source = models.ForeignKey(
+        WorkType,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
+    )
 
 
 class MaterialItemEstimate(EstimatableCalculationModel):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    material_type = models.ForeignKey(MaterialType, on_delete=models.CASCADE)
-
-    PARENT_OBJECT_KEY = 'material_type'
-
-    def __str__(self):
-        return '<pk: {}> {} // {}'.format(
-            self.pk,
-            self.material_type.name,
-            self.project
-        )
+    source = models.ForeignKey(
+        MaterialType,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
+    )

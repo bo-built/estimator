@@ -25,7 +25,21 @@ class WorkAggregateAdmin(BaseAggregateAdmin):
 
 
 class BaseEstimateAdmin(admin.ModelAdmin):
-    item_type_field = None
+    fields = [
+        'project',
+        'source',
+        'name',
+        'description',
+        'estimated_quantity',
+        'cost_rate',
+        'charge_multiplier',
+        'actual_quantity',
+        'estimated_cost',
+        'estimated_charge',
+        'estimated_profit',
+        'realized_cost',
+        'realized_profit',
+    ]
 
     readonly_fields = [
         'estimated_cost',
@@ -35,30 +49,15 @@ class BaseEstimateAdmin(admin.ModelAdmin):
         'realized_profit',
     ]
 
-    def get_fields(self, request, obj=None):
-        return [
-            'project',
-            self.item_type_field,
-            'estimated_quantity',
-            'cost_rate',
-            'charge_multiplier',
-            'actual_quantity',
-            'estimated_cost',
-            'estimated_charge',
-            'estimated_profit',
-            'realized_cost',
-            'realized_profit',
-        ]
-
 
 @admin.register(models.MaterialItemEstimate)
 class MaterialItemEstimateAdmin(BaseEstimateAdmin):
-    item_type_field = 'material_type'
+    pass
 
 
 @admin.register(models.WorkItemEstimate)
 class WorkItemEstimateAdmin(BaseEstimateAdmin):
-    item_type_field = 'work_type'
+    pass
 
 
 @admin.register(models.Project)

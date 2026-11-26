@@ -84,14 +84,27 @@ class AggregateCalculationModel(models.Model):
 
 
 class EstimatableCalculationModel(models.Model):
-    """ This Model Class represents single instances of e.g. a material or labor
-        type, which needs to be estimated in order to calculate a total  estiate
+    """ This Model Class represents single instances of e.g. a material or work
+        type, which needs to be estimated in order to calculate a total  estimate
         for a project.
+
+        Properties from the source catalogue item are copied to the estimable item
+        instance so that they can be tailored for a specific project.
     """
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return '<pk: {}> {} // {}'.format(
+            self.pk,
+            self.source.name,
+            self.project
+        )
+
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
 
     estimated_quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     cost_rate = models.DecimalField(
@@ -119,23 +132,31 @@ class EstimatableCalculationModel(models.Model):
     realized_cost = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     realized_profit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-    PARENT_OBJECT_KEY = None
-
     def save(self, *args, **kwargs):
+        """ If the user has not set specific cost/charge values for this instance
+            copy them from the catalogue source instance. Otherwise, keep the
+            provided user input values.
 
+            Copy the name and description from the source instace. This future
+            proofs this object from changes or deletion of the source object.
+
+            Essentially, an estimate just gets initial information from the
+            catalogue, but is not coupled to the catalogue item going forward.
+        """
         created = self.pk is None
         if created:
-            parent = getattr(self, self.PARENT_OBJECT_KEY)
             if not self.cost_rate:
-                self.cost_rate = parent.cost_rate
+                self.cost_rate = self.source.cost_rate
             if not self.charge_multiplier:
-                self.charge_multiplier = parent.charge_multiplier
+                self.charge_multiplier = self.source.charge_multiplier
+            self.name = self.source.name
+            self.description = self.source.description
 
         self.update_calculations()
 
         super().save(*args, **kwargs)
 
-        self.project.laboraggregate.aggregate_values()
+        self.project.workaggregate.aggregate_values()
         self.project.materialaggregate.aggregate_values()
         self.project.save()
 
